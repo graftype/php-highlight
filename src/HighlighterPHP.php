@@ -29,24 +29,24 @@ class HighlighterPHP extends HighlighterBase
      */
     public function highlight()
     {
-        // 1) Add a newline after "<?php" 
-        //    to prevent the first line from sticking to comments/code
-        $html = highlight_string('<?php' . PHP_EOL . trim($this->text), true);
+        // 1) Ask PHP to highlight the code; prepend "<?php " so tokens are recognized
+        $html = highlight_string('<?php ' . rtrim($this->text, "\r\n"), true);
     
-        // 2) Remove possible <code>...</code> wrappers
+        // 2) Remove optional <code> wrappers returned by highlight_string()
         $html = preg_replace('~</?code[^>]*>~i', '', $html);
     
-        // 3) Reliably remove the inserted "<?php" by cutting everything before the first <br />
-        $pos = strpos($html, '<br />');
-        if ($pos !== false) {
-            $html = substr($html, $pos + 6); // 6 = length of "<br />"
-        } else {
-            // Fallback: remove any HTML-encoded variants of "<?php"
-            $html = preg_replace('~&lt;\?php(?:&nbsp;|\s)*~i', '', $html);
-        }
+        // 3) Normalize line breaks:
+        //    - Convert raw newlines to <br />
+        //    - Normalize any <br>, <br/>, <br /> variants to a single form
+        $html = str_replace(["\r\n", "\r", "\n"], '<br />', $html);
+        $html = preg_replace('~<br\s*/?>~i', '<br />', $html);
     
-        // 4) Normalize line breaks
-        $html = str_replace(PHP_EOL, '<br />', $html);
+        // 4) Remove the inserted "&lt;?php " header ONLY (keep the following line break intact)
+        //    This regex strips "<?php" plus any spaces/&nbsp; that follow it, but does NOT eat the next <br />
+        $html = preg_replace('~&lt;\?php(?:&nbsp;|\s)+~i', '', $html, 1);
+    
+        // 5) (Optional) Collapse accidental double breaks after normalization
+        $html = preg_replace('~(?:<br\s*/?>\s*){2,}~i', '<br />', $html);
     
         return $html;
     }
