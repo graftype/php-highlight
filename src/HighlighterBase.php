@@ -6,24 +6,46 @@ use Demyanovs\PHPHighlight\Themes\Theme;
 
 class HighlighterBase
 {
-    /** @var string[] */
-    protected array $keywords = [];
+    /**
+     * @var string[]
+     */
+    protected $keywords = [];
 
-    protected Theme $theme;
+    /**
+     * @var Theme
+     */
+    protected $theme;
 
-    public function __construct(protected string $text)
+    /**
+     * @var string
+     */
+    protected $text;
+
+    /**
+     * HighlighterBase constructor.
+     *
+     * @param string $text
+     */
+    public function __construct($text)
     {
+        $this->text = $text;
     }
 
-    public function setTheme(Theme $theme): void
+    /**
+     * @param Theme $theme
+     */
+    public function setTheme($theme)
     {
         $this->theme = $theme;
     }
 
-    public function highlight(): string
+    /**
+     * @return string
+     */
+    public function highlight()
     {
         $byLines = explode(PHP_EOL, $this->text);
-        $lines    = [];
+        $lines   = [];
         foreach ($byLines as $key => $line) {
             // Comment line
             if ($this->isCommentLine($line)) {
@@ -42,10 +64,6 @@ class HighlighterBase
                     $line = self::colorWord($word, $line, $this->theme->defaultColorSchema->getVariableColor());
                 }
 
-//                else {
-//                    $line = self::colorWord($word, $line, $this->theme->defaultColorSchema->getStringColor());
-//                }
-
                 $lines[$key] = $line;
             }
         }
@@ -53,44 +71,66 @@ class HighlighterBase
         return sprintf(
             '<span style="color:%s">%s</span>',
             $this->theme->defaultColorSchema->getStringColor(),
-            implode('<br />', $lines),
+            implode('<br />', $lines)
         );
     }
 
     /**
-     * @return array|string|string[]
+     * @param string $word
+     * @param string $line
+     * @param string $color
+     * @return string
      */
-    public static function colorWord(string $word, string $line, string $color): array|string
+    public static function colorWord($word, $line, $color)
     {
         return str_replace(
             $word,
             sprintf('<span style="color: %s">%s</span>', $color, $word),
-            $line,
+            $line
         );
     }
 
-    public function setText(string $text): void
+    /**
+     * @param string $text
+     */
+    public function setText($text)
     {
         $this->text = $text;
     }
 
-    protected function isVariable(string $word): bool
+    /**
+     * @param string $word
+     * @return bool
+     */
+    protected function isVariable($word)
     {
-        return str_starts_with($word, '$') ?? false;
+        return strpos($word, '$') === 0;
     }
 
-    protected function isFlag(string $word): bool
+    /**
+     * @param string $word
+     * @return bool
+     */
+    protected function isFlag($word)
     {
-        return str_starts_with($word, '-') ?? false;
+        return strpos($word, '-') === 0;
     }
 
-    protected function isKeyword(string $word): bool
+    /**
+     * @param string $word
+     * @return bool
+     */
+    protected function isKeyword($word)
     {
-        return in_array($word, $this->keywords) ?? false;
+        return in_array($word, $this->keywords);
     }
 
-    protected function isCommentLine(string $word): bool
+    /**
+     * @param string $word
+     * @return bool
+     */
+    protected function isCommentLine($word)
     {
-        return str_starts_with($word, '#') ?? false;
+        return strpos($word, '#') === 0;
     }
 }
