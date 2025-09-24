@@ -4,31 +4,42 @@ namespace Demyanovs\PHPHighlight;
 
 class HighlighterPHP extends HighlighterBase
 {
-    private static ?self $instance = null;
+    /**
+     * @var HighlighterPHP|null
+     */
+    private static $instance = null;
 
-    public static function getInstance(string $text): self
+    /**
+     * @param string $text
+     * @return HighlighterPHP
+     */
+    public static function getInstance($text)
     {
         if (self::$instance) {
             self::$instance->setText($text);
-
             return self::$instance;
         }
 
-        return self::$instance = new self($text);
+        self::$instance = new self($text);
+        return self::$instance;
     }
 
-    public function highlight(): string
+    /**
+     * @return string
+     */
+    public function highlight()
     {
         $text = str_replace(
             ['&lt;?php&nbsp;', '<code>', '</code>'],
             '',
-            highlight_string('<?php ' . trim($this->text), true),
+            highlight_string('<?php ' . trim($this->text), true)
         );
         $text = str_replace(PHP_EOL, '<br />', $text);
 
         $byLines = explode('<br />', $text);
-        $lines    = [];
-        $i        = 0;
+        $lines   = [];
+        $i       = 0;
+
         foreach ($byLines as $key => $line) {
             $i++;
             if ($i === 1) {
