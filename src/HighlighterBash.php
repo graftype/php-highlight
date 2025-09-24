@@ -4,10 +4,15 @@ namespace Demyanovs\PHPHighlight;
 
 class HighlighterBash extends HighlighterBase
 {
-    private static ?self $instance = null;
+    /**
+     * @var HighlighterBash|null
+     */
+    private static $instance = null;
 
-    /** @var string[] */
-    protected array $keywords = [
+    /**
+     * @var string[]
+     */
+    protected $keywords = [
         'wget',
         'tar',
         'cd',
@@ -33,14 +38,18 @@ class HighlighterBash extends HighlighterBase
         'composer',
     ];
 
-    public static function getInstance(string $text): self
+    /**
+     * @param string $text
+     * @return HighlighterBash
+     */
+    public static function getInstance($text)
     {
         if (self::$instance) {
             self::$instance->setText($text);
-
             return self::$instance;
         }
 
-        return self::$instance = new self($text);
+        self::$instance = new self($text);
+        return self::$instance;
     }
 }
