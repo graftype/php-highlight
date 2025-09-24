@@ -8,12 +8,21 @@ use Demyanovs\PHPHighlight\Themes\Dto\XMLColorSchemaDto;
 
 class Theme
 {
+    private string $title;
+    public DefaultColorSchemaDto $defaultColorSchema;
+    public PHPColorSchemaDto $PHPColorSchemaDto;
+    public XMLColorSchemaDto $XMLColorSchemaDto;
+
     public function __construct(
-        private readonly string      $title,
-        public DefaultColorSchemaDto $defaultColorSchema,
-        public PHPColorSchemaDto     $PHPColorSchemaDto,
-        public XMLColorSchemaDto     $XMLColorSchemaDto,
+        string $title,
+        DefaultColorSchemaDto $defaultColorSchema,
+        PHPColorSchemaDto $PHPColorSchemaDto,
+        XMLColorSchemaDto $XMLColorSchemaDto,
     ) {
+        $this->title = $title;
+        $this->defaultColorSchema = $defaultColorSchema;
+        $this->PHPColorSchemaDto = $PHPColorSchemaDto;
+        $this->XMLColorSchemaDto = $XMLColorSchemaDto;
     }
 
     public function getTitle(): string
@@ -21,3 +30,4 @@ class Theme
         return $this->title;
     }
 }
+
