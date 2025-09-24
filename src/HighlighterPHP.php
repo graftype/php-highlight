@@ -29,42 +29,25 @@ class HighlighterPHP extends HighlighterBase
      */
     public function highlight()
     {
-        $text = str_replace(
-            ['&lt;?php&nbsp;', '<code>', '</code>'],
-            '',
-            highlight_string('<?php ' . trim($this->text), true)
-        );
-        $text = str_replace(PHP_EOL, '<br />', $text);
-
-        $byLines = explode('<br />', $text);
-        $lines   = [];
-        $i       = 0;
-
-        foreach ($byLines as $key => $line) {
-            $i++;
-            if ($i === 1) {
-                continue;
-            }
-
-            // Join first two rows
-            if ($i === 2) {
-                $line = $byLines[0] . $byLines[1];
-            }
-
-            // Join last rows
-            if (
-                $i === count($byLines) - 3 &&
-                $byLines[count($byLines) - 2] === '</span>' &&
-                $byLines[count($byLines) - 1] === ''
-            ) {
-                $lines[] = $byLines[count($byLines) - 4];
-                $lines[] = $byLines[$i] . $byLines[count($byLines) - 2] . $byLines[count($byLines) - 1];
-                break;
-            }
-
-            $lines[$key] = $line;
+        // 1) Add a newline after "<?php" 
+        //    to prevent the first line from sticking to comments/code
+        $html = highlight_string('<?php' . PHP_EOL . trim($this->text), true);
+    
+        // 2) Remove possible <code>...</code> wrappers
+        $html = preg_replace('~</?code[^>]*>~i', '', $html);
+    
+        // 3) Reliably remove the inserted "<?php" by cutting everything before the first <br />
+        $pos = strpos($html, '<br />');
+        if ($pos !== false) {
+            $html = substr($html, $pos + 6); // 6 = length of "<br />"
+        } else {
+            // Fallback: remove any HTML-encoded variants of "<?php"
+            $html = preg_replace('~&lt;\?php(?:&nbsp;|\s)*~i', '', $html);
         }
-
-        return implode('<br />', $lines);
+    
+        // 4) Normalize line breaks
+        $html = str_replace(PHP_EOL, '<br />', $html);
+    
+        return $html;
     }
 }
