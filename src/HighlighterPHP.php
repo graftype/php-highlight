@@ -36,6 +36,17 @@ class HighlighterPHP extends HighlighterBase
         );
         $text = str_replace(PHP_EOL, '<br />', $text);
 
+        // Extra logic for PHP 8+
+        if (PHP_VERSION_ID >= 80000) {
+            // On PHP 8+ highlight_string() wraps "<?php" differently
+            // Remove "<?php" including optional <span> wrapper and spaces/&nbsp;
+            $text = preg_replace('~<span[^>]*>\s*&lt;\?php(?:&nbsp;|\s)+</span>~i', '', $text, 1);
+            $text = preg_replace('~^\s*&lt;\?php(?:&nbsp;|\s)+~i', '', $text, 1);
+    
+            // Also clean any leading &nbsp; that may cause indentation
+            $text = preg_replace('~^(?:&nbsp;|\s)+~u', '', $text);
+        }
+
         $byLines = explode('<br />', $text);
         $lines    = [];
         $i        = 0;
