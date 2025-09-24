@@ -8,26 +8,51 @@ use Demyanovs\PHPHighlight\Themes\Dto\XMLColorSchemaDto;
 
 class Theme
 {
-    private string $title;
-    public DefaultColorSchemaDto $defaultColorSchema;
-    public PHPColorSchemaDto $PHPColorSchemaDto;
-    public XMLColorSchemaDto $XMLColorSchemaDto;
+    /**
+     * @var string
+     */
+    private $title;
 
+    /**
+     * @var DefaultColorSchemaDto
+     */
+    public $defaultColorSchema;
+
+    /**
+     * @var PHPColorSchemaDto
+     */
+    public $PHPColorSchemaDto;
+
+    /**
+     * @var XMLColorSchemaDto
+     */
+    public $XMLColorSchemaDto;
+
+    /**
+     * Theme constructor.
+     *
+     * @param string               $title
+     * @param DefaultColorSchemaDto $defaultColorSchema
+     * @param PHPColorSchemaDto     $PHPColorSchemaDto
+     * @param XMLColorSchemaDto     $XMLColorSchemaDto
+     */
     public function __construct(
-        string $title,
+        $title,
         DefaultColorSchemaDto $defaultColorSchema,
         PHPColorSchemaDto $PHPColorSchemaDto,
-        XMLColorSchemaDto $XMLColorSchemaDto,
+        XMLColorSchemaDto $XMLColorSchemaDto
     ) {
-        $this->title = $title;
+        $this->title              = $title;
         $this->defaultColorSchema = $defaultColorSchema;
-        $this->PHPColorSchemaDto = $PHPColorSchemaDto;
-        $this->XMLColorSchemaDto = $XMLColorSchemaDto;
+        $this->PHPColorSchemaDto  = $PHPColorSchemaDto;
+        $this->XMLColorSchemaDto  = $XMLColorSchemaDto;
     }
 
-    public function getTitle(): string
+    /**
+     * @return string
+     */
+    public function getTitle()
     {
         return $this->title;
     }
 }
-
