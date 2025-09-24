@@ -27,28 +27,43 @@ class HighlighterPHP extends HighlighterBase
     /**
      * @return string
      */
-    public function highlight()
+    public function highlight(): string
     {
-        // 1) Highlight the code using PHP's built-in highlighter.
-        //    Prepend "<?php " so tokens are parsed correctly.
-        $html = highlight_string('<?php ' . rtrim($this->text, "\r\n"), true);
-    
-        // 2) Remove optional <code> wrappers.
-        $html = preg_replace('~</?code[^>]*>~i', '', $html);
-    
-        // 3) Normalize line breaks.
-        $html = str_replace(["\r\n", "\r", "\n"], '<br />', $html);
-        $html = preg_replace('~<br\s*/?>~i', '<br />', $html);
-    
-        // 4) Remove the inserted "<?php " header.
-        $html = preg_replace('~&lt;\?php(?:&nbsp;|\s)+~i', '', $html, 1);
-    
-        // 5) Remove any leading &nbsp; at the start (fixes unwanted indentation).
-        $html = preg_replace('~^(&nbsp;)+~i', '', $html);
-    
-        // 6) Collapse accidental multiple breaks.
-        $html = preg_replace('~(?:<br\s*/?>\s*){2,}~i', '<br />', $html);
-    
-        return $html;
+        $text = str_replace(
+            ['&lt;?php&nbsp;', '<code>', '</code>'],
+            '',
+            highlight_string('<?php ' . trim($this->text), true),
+        );
+        $text = str_replace(PHP_EOL, '<br />', $text);
+
+        $byLines = explode('<br />', $text);
+        $lines    = [];
+        $i        = 0;
+        foreach ($byLines as $key => $line) {
+            $i++;
+            if ($i === 1) {
+                continue;
+            }
+
+            // Join first two rows
+            if ($i === 2) {
+                $line = $byLines[0] . $byLines[1];
+            }
+
+            // Join last rows
+            if (
+                $i === count($byLines) - 3 &&
+                $byLines[count($byLines) - 2] === '</span>' &&
+                $byLines[count($byLines) - 1] === ''
+            ) {
+                $lines[] = $byLines[count($byLines) - 4];
+                $lines[] = $byLines[$i] . $byLines[count($byLines) - 2] . $byLines[count($byLines) - 1];
+                break;
+            }
+
+            $lines[$key] = $line;
+        }
+
+        return implode('<br />', $lines);
     }
 }
