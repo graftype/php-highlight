@@ -31,7 +31,7 @@ class Highlighter
     /**
      * @return string|string[]|null
      */
-    public function parse():
+    public function parse()
     {
         $callback = function ($matches) {
             $patternDataAttr = '/data-(\S+)=["\']?((?:.(?!["\']?\s+(?:\S+)=|[>"\']))+.)["\']?/ism';
