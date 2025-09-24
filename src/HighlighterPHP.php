@@ -29,23 +29,24 @@ class HighlighterPHP extends HighlighterBase
      */
     public function highlight()
     {
-        // 1) Ask PHP to highlight the code; prepend "<?php " so tokens are recognized
+        // 1) Highlight the code using PHP's built-in highlighter.
+        //    Prepend "<?php " so tokens are parsed correctly.
         $html = highlight_string('<?php ' . rtrim($this->text, "\r\n"), true);
     
-        // 2) Remove optional <code> wrappers returned by highlight_string()
+        // 2) Remove optional <code> wrappers.
         $html = preg_replace('~</?code[^>]*>~i', '', $html);
     
-        // 3) Normalize line breaks:
-        //    - Convert raw newlines to <br />
-        //    - Normalize any <br>, <br/>, <br /> variants to a single form
+        // 3) Normalize line breaks.
         $html = str_replace(["\r\n", "\r", "\n"], '<br />', $html);
         $html = preg_replace('~<br\s*/?>~i', '<br />', $html);
     
-        // 4) Remove the inserted "&lt;?php " header ONLY (keep the following line break intact)
-        //    This regex strips "<?php" plus any spaces/&nbsp; that follow it, but does NOT eat the next <br />
+        // 4) Remove the inserted "<?php " header.
         $html = preg_replace('~&lt;\?php(?:&nbsp;|\s)+~i', '', $html, 1);
     
-        // 5) (Optional) Collapse accidental double breaks after normalization
+        // 5) Remove any leading &nbsp; at the start (fixes unwanted indentation).
+        $html = preg_replace('~^(&nbsp;)+~i', '', $html);
+    
+        // 6) Collapse accidental multiple breaks.
         $html = preg_replace('~(?:<br\s*/?>\s*){2,}~i', '<br />', $html);
     
         return $html;
