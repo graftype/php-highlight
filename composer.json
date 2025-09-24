@@ -1,5 +1,5 @@
 {
-    "name": "demyanovs/php-highlight",
+    "name": "graftype/php-highlight",
     "description": "A PHP library for highlighting code syntax.",
     "type": "library",
     "license": "MIT",
@@ -14,10 +14,14 @@
         {
             "name": "Demyanov Vyacheslav",
             "email": "demyanovs@gmail.com"
+        },
+        {
+            "name": "Sergei Komlev",
+            "email": "sk@graftype.com"
         }
     ],
     "require": {
-        "php": ">=8.1"
+        "php": ">=7.4"
     },
     "autoload": {
         "psr-4": {
