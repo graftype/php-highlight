@@ -4,30 +4,62 @@ namespace Demyanovs\PHPHighlight\Themes\Dto;
 
 class XMLColorSchemaDto
 {
+    /**
+     * @var string
+     */
+    private $XMLTagColor;
+
+    /**
+     * @var string
+     */
+    private $XMLAttrNameColor;
+
+    /**
+     * @var string
+     */
+    private $XMLAttrValueColor;
+
+    /**
+     * @var string
+     */
+    private $XMLInfoColor;
+
+    /**
+     * XMLColorSchemaDto constructor.
+     *
+     * @param string $XMLTagColor
+     * @param string $XMLAttrNameColor
+     * @param string $XMLAttrValueColor
+     * @param string $XMLInfoColor
+     */
     public function __construct(
-        private readonly string $XMLTagColor,
-        private readonly string $XMLAttrNameColor,
-        private readonly string $XMLAttrValueColor,
-        private readonly string $XMLInfoColor,
+        $XMLTagColor,
+        $XMLAttrNameColor,
+        $XMLAttrValueColor,
+        $XMLInfoColor
     ) {
+        $this->XMLTagColor      = $XMLTagColor;
+        $this->XMLAttrNameColor = $XMLAttrNameColor;
+        $this->XMLAttrValueColor = $XMLAttrValueColor;
+        $this->XMLInfoColor     = $XMLInfoColor;
     }
 
-    public function getXMLTagColor(): string
+    public function getXMLTagColor()
     {
         return $this->XMLTagColor;
     }
 
-    public function getXMLAttrNameColor(): string
+    public function getXMLAttrNameColor()
     {
         return $this->XMLAttrNameColor;
     }
 
-    public function getXMLAttrValueColor(): string
+    public function getXMLAttrValueColor()
     {
         return $this->XMLAttrValueColor;
     }
 
-    public function getXMLInfoColor(): string
+    public function getXMLInfoColor()
     {
         return $this->XMLInfoColor;
     }
